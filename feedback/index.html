@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>不具合の報告・ご要望</title>
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --text: #1d1d1f;
+    --sub: #6e6e73;
+    --line: #d2d2d7;
+    --accent: #0a84ff;
+    --accent-text: #ffffff;
+    --chip: #ececf0;
+    --error: #d70015;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --text: #f5f5f7;
+      --sub: #98989d;
+      --line: #3a3a3c;
+      --accent: #0a84ff;
+      --accent-text: #ffffff;
+      --chip: #2c2c2e;
+      --error: #ff453a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
+  main {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 16px calc(40px + env(safe-area-inset-bottom));
+  }
+  h1 { font-size: 26px; line-height: 1.3; margin: 0 0 8px; }
+  .lead { color: var(--sub); font-size: 15px; margin: 0 0 24px; }
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px 16px;
+    margin-bottom: 16px;
+  }
+  label.title {
+    display: block;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  select, textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  select { appearance: none; -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--sub) 50%), linear-gradient(135deg, var(--sub) 50%, transparent 50%);
+    background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+    background-size: 6px 6px; background-repeat: no-repeat; padding-right: 36px; }
+  textarea { min-height: 180px; resize: vertical; }
+  select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kinds input { position: absolute; opacity: 0; pointer-events: none; }
+  .kinds label {
+    display: block;
+    text-align: center;
+    padding: 14px 8px;
+    border-radius: 10px;
+    background: var(--chip);
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .kinds input:checked + label { background: var(--accent); color: var(--accent-text); }
+  .kinds input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hint { color: var(--sub); font-size: 14px; margin: 8px 0 0; }
+  .info { color: var(--sub); font-size: 13px; margin: 0; }
+  .info b { color: var(--text); font-weight: 500; }
+  button {
+    width: 100%;
+    font: inherit;
+    font-weight: 700;
+    font-size: 17px;
+    border: 0;
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--accent);
+    color: var(--accent-text);
+    cursor: pointer;
+  }
+  button:disabled { opacity: .5; cursor: default; }
+  .error { color: var(--error); font-size: 14px; margin: 10px 0 0; min-height: 1em; }
+  .hp { position: absolute; left: -9999px; }
+  #done { display: none; text-align: center; padding-top: 48px; }
+  #done .mark { font-size: 56px; line-height: 1; }
+  #done h2 { font-size: 22px; margin: 16px 0 8px; }
+  #done p { color: var(--sub); margin: 0 0 28px; }
+  #again { background: var(--chip); color: var(--text); }
+</style>
+</head>
+<body>
+<main>
+  <section id="formView">
+    <h1>不具合の報告・ご要望</h1>
+    <p class="lead">うまく動かないところや、ほしい機能を教えてください。いただいた内容はすべて読んで、アプリの改善に使います。個別のお返事はしていません。</p>
+
+    <form id="form" novalidate>
+      <div class="card">
+        <label class="title" for="app">アプリ</label>
+        <select id="app" name="app" required></select>
+      </div>
+
+      <div class="card">
+        <span class="title" style="display:block;font-weight:600;font-size:15px;margin-bottom:10px">種類</span>
+        <div class="kinds" role="radiogroup" aria-label="種類">
+          <div><input type="radio" name="kind" id="kindBug" value="不具合の報告" checked><label for="kindBug">不具合の報告</label></div>
+          <div><input type="radio" name="kind" id="kindIdea" value="機能のリクエスト"><label for="kindIdea">機能のリクエスト</label></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="title" for="body">内容</label>
+        <textarea id="body" name="body" maxlength="4000" required></textarea>
+        <p class="hint" id="bodyHint">どの画面で、何をしたら、どうなったかを書いてもらえると助かります。</p>
+      </div>
+
+      <div class="card" id="infoCard" hidden>
+        <p class="info" id="info"></p>
+      </div>
+
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <button type="submit" id="send">送信する</button>
+      <p class="error" id="error" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="done" aria-live="polite">
+    <div class="mark">✓</div>
+    <h2>送信しました</h2>
+    <p>ありがとうございます。<br>いただいた内容は大切に読ませていただきます。</p>
+    <button type="button" id="again">もう1件送る</button>
+  </section>
+</main>
+
+<script>
+  // 送信先（Google フォーム）。フォームを作り直したらここを書き換える
+  var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLScj2cagmw9L2fcxXX0qRxk9cqP6-DhJ6KNFGm7oY3OhtJvwNQ/formResponse";
+  var ENTRY = {
+    app: "entry.219673661",
+    kind: "entry.848701799",
+    body: "entry.822606775",
+    version: "entry.1016092825",
+    device: "entry.2004843490"
+  };
+
+  // ?app= に入れる値と表示名。アプリを増やしたらここに足す
+  var APPS = [
+    ["reprecord", "筋トレップ帳"],
+    ["tekulog", "てくログ"],
+    ["timenote", "タイムノート"],
+    ["tsumilog", "積みログ"],
+    ["osumo", "一筆書き相撲"],
+    ["mochitto", "もちっとパズル"],
+    ["kaidoki", "買いどき"],
+    ["koeedit", "こえエディット"],
+    ["clipa", "Clipa"],
+    ["pocketly", "Pocketly"],
+    ["reviewly", "Reviewly"],
+    ["other", "その他"]
+  ];
+
+  var params = new URLSearchParams(location.search);
+  var select = document.getElementById("app");
+  var wanted = params.get("app");
+  if (!wanted || !APPS.some(function (a) { return a[0] === wanted; })) {
+    var ph = document.createElement("option");
+    ph.value = ""; ph.textContent = "選んでください"; ph.disabled = true; ph.selected = true;
+    select.appendChild(ph);
+  }
+  APPS.forEach(function (a) {
+    var o = document.createElement("option");
+    o.value = a[1]; o.textContent = a[1];
+    if (a[0] === wanted) o.selected = true;
+    select.appendChild(o);
+  });
+
+  if (params.get("kind") === "idea") document.getElementById("kindIdea").checked = true;
+
+  var version = (params.get("v") || "").slice(0, 40);
+  var device = [params.get("device"), params.get("os")].filter(Boolean).join(" / ").slice(0, 80);
+  if (version || device) {
+    var parts = [];
+    if (version) parts.push("アプリのバージョン <b>" + escapeHtml(version) + "</b>");
+    if (device) parts.push("端末 <b>" + escapeHtml(device) + "</b>");
+    document.getElementById("info").innerHTML = "一緒に送られる情報：" + parts.join("、");
+    document.getElementById("infoCard").hidden = false;
+  }
+
+  var hint = document.getElementById("bodyHint");
+  document.querySelectorAll('input[name="kind"]').forEach(function (r) {
+    r.addEventListener("change", updateHint);
+  });
+  function updateHint() {
+    hint.textContent = document.getElementById("kindIdea").checked
+      ? "どんな機能があるとうれしいか、どんな場面で使いたいかを書いてください。"
+      : "どの画面で、何をしたら、どうなったかを書いてもらえると助かります。";
+  }
+  updateHint();
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  var form = document.getElementById("form");
+  var err = document.getElementById("error");
+  var send = document.getElementById("send");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    err.textContent = "";
+    if (!select.value) { err.textContent = "アプリを選んでください。"; select.focus(); return; }
+    var body = document.getElementById("body").value.trim();
+    if (body.length < 2) { err.textContent = "内容を書いてください。"; document.getElementById("body").focus(); return; }
+    if (form.website.value) { showDone(); return; }
+
+    var data = new URLSearchParams();
+    data.append(ENTRY.app, select.value);
+    data.append(ENTRY.kind, form.querySelector('input[name="kind"]:checked').value);
+    data.append(ENTRY.body, body);
+    data.append(ENTRY.version, version);
+    data.append(ENTRY.device, device);
+
+    send.disabled = true;
+    send.textContent = "送信中…";
+    fetch(FORM_ACTION, { method: "POST", mode: "no-cors", body: data })
+      .then(showDone)
+      .catch(function () {
+        err.textContent = "送信できませんでした。通信できる状態で、もう一度お試しください。";
+      })
+      .finally(function () {
+        send.disabled = false;
+        send.textContent = "送信する";
+      });
+  });
+
+  function showDone() {
+    document.getElementById("formView").style.display = "none";
+    document.getElementById("done").style.display = "block";
+    window.scrollTo(0, 0);
+  }
+  document.getElementById("again").addEventListener("click", function () {
+    document.getElementById("body").value = "";
+    document.getElementById("done").style.display = "none";
+    document.getElementById("formView").style.display = "block";
+  });
+</script>
+</body>
+</html>
