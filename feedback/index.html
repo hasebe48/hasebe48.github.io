@@ -130,6 +130,7 @@
         <div class="kinds" role="radiogroup" aria-label="種類">
           <div><input type="radio" name="kind" id="kindBug" value="不具合の報告" checked><label for="kindBug">不具合の報告</label></div>
           <div><input type="radio" name="kind" id="kindIdea" value="機能のリクエスト"><label for="kindIdea">機能のリクエスト</label></div>
+          <div id="contactOption" hidden><input type="radio" name="kind" id="kindContact" value="お問い合わせ"><label for="kindContact">お問い合わせ</label></div>
         </div>
       </div>
 
@@ -183,6 +184,7 @@
     ["pocketly", "Pocketly"],
     ["reviewly", "Reviewly"],
     ["lingostep", "LingoStep"],
+    ["sumi", "Sumi"],
     ["other", "その他"]
   ];
 
@@ -201,7 +203,21 @@
     select.appendChild(o);
   });
 
+  var contactOption = document.getElementById("contactOption");
+  var kindContact = document.getElementById("kindContact");
+
+  function updateContactOption() {
+    var isSumi = select.value === "Sumi";
+    contactOption.hidden = !isSumi;
+    document.querySelector("#formView h1").textContent = isSumi
+      ? "お問い合わせ・不具合報告・ご要望"
+      : "不具合の報告・ご要望";
+    if (!isSumi && kindContact.checked) document.getElementById("kindBug").checked = true;
+  }
+
+  updateContactOption();
   if (params.get("kind") === "idea") document.getElementById("kindIdea").checked = true;
+  if (params.get("kind") === "contact" && !contactOption.hidden) kindContact.checked = true;
 
   var version = (params.get("v") || "").slice(0, 40);
   var device = [params.get("device"), params.get("os")].filter(Boolean).join(" / ").slice(0, 80);
@@ -218,10 +234,18 @@
     r.addEventListener("change", updateHint);
   });
   function updateHint() {
+    if (kindContact.checked) {
+      hint.textContent = "お問い合わせの内容を書いてください。";
+      return;
+    }
     hint.textContent = document.getElementById("kindIdea").checked
       ? "どんな機能があるとうれしいか、どんな場面で使いたいかを書いてください。"
       : "どの画面で、何をしたら、どうなったかを書いてもらえると助かります。";
   }
+  select.addEventListener("change", function () {
+    updateContactOption();
+    updateHint();
+  });
   updateHint();
 
   function escapeHtml(s) {
