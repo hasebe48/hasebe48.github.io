@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["45FP6243LF.hideo.MinnaCalendar"],
+        "components": [{ "/": "/minna/join/*", "comment": "みんなの予定の招待リンク" }]
+      }
+    ]
+  }
+}
