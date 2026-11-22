@@ -35,7 +35,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", "PingFang TC", sans-serif;
     font-size: 17px;
     line-height: 1.6;
     -webkit-text-size-adjust: 100%;
@@ -45,6 +45,9 @@
     margin: 0 auto;
     padding: 28px 16px calc(40px + env(safe-area-inset-bottom));
   }
+  .top { display: flex; justify-content: flex-end; margin: -12px 0 12px; }
+  .top select { width: auto; font-size: 14px; padding: 6px 30px 6px 10px; background-color: var(--card);
+    background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; border-color: transparent; }
   h1 { font-size: 26px; line-height: 1.3; margin: 0 0 8px; }
   .lead { color: var(--sub); font-size: 15px; margin: 0 0 24px; }
   .card {
@@ -115,26 +118,37 @@
 </head>
 <body>
 <main>
+  <div class="top">
+    <select id="lang" aria-label="Language">
+      <option value="ja">日本語</option>
+      <option value="en">English</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+      <option value="ko">한국어</option>
+      <option value="zh-Hant">繁體中文</option>
+    </select>
+  </div>
+
   <section id="formView">
-    <h1>不具合の報告・ご要望</h1>
-    <p class="lead">うまく動かないところや、ほしい機能を教えてください。いただいた内容はすべて読んで、アプリの改善に使います。個別のお返事はしていません。</p>
+    <h1 data-i18n="title">不具合の報告・ご要望</h1>
+    <p class="lead" data-i18n="lead">うまく動かないところや、ほしい機能を教えてください。いただいた内容はすべて読んで、アプリの改善に使います。個別のお返事はしていません。</p>
 
     <form id="form" novalidate>
       <div class="card">
-        <label class="title" for="app">アプリ</label>
+        <label class="title" for="app" data-i18n="app">アプリ</label>
         <select id="app" name="app" required></select>
       </div>
 
       <div class="card">
-        <span class="title" style="display:block;font-weight:600;font-size:15px;margin-bottom:10px">種類</span>
+        <span class="title" style="display:block;font-weight:600;font-size:15px;margin-bottom:10px" data-i18n="kind">種類</span>
         <div class="kinds" role="radiogroup" aria-label="種類">
-          <div><input type="radio" name="kind" id="kindBug" value="不具合の報告" checked><label for="kindBug">不具合の報告</label></div>
-          <div><input type="radio" name="kind" id="kindIdea" value="機能のリクエスト"><label for="kindIdea">機能のリクエスト</label></div>
+          <div><input type="radio" name="kind" id="kindBug" value="不具合の報告" checked><label for="kindBug" data-i18n="bug">不具合の報告</label></div>
+          <div><input type="radio" name="kind" id="kindIdea" value="機能のリクエスト"><label for="kindIdea" data-i18n="idea">機能のリクエスト</label></div>
         </div>
       </div>
 
       <div class="card">
-        <label class="title" for="body">内容</label>
+        <label class="title" for="body" data-i18n="body">内容</label>
         <textarea id="body" name="body" maxlength="4000" required></textarea>
         <p class="hint" id="bodyHint">どの画面で、何をしたら、どうなったかを書いてもらえると助かります。</p>
       </div>
@@ -145,16 +159,16 @@
 
       <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-      <button type="submit" id="send">送信する</button>
+      <button type="submit" id="send" data-i18n="send">送信する</button>
       <p class="error" id="error" role="alert"></p>
     </form>
   </section>
 
   <section id="done" aria-live="polite">
     <div class="mark">✓</div>
-    <h2>送信しました</h2>
-    <p>ありがとうございます。<br>いただいた内容は大切に読ませていただきます。</p>
-    <button type="button" id="again">もう1件送る</button>
+    <h2 data-i18n="doneTitle">送信しました</h2>
+    <p data-i18n-html="doneBody">ありがとうございます。<br>いただいた内容は大切に読ませていただきます。</p>
+    <button type="button" id="again" data-i18n="again">もう1件送る</button>
   </section>
 </main>
 
@@ -169,42 +183,150 @@
     device: "entry.2004843490"
   };
 
-  // ?app= に入れる値と表示名。アプリを増やしたらここに足す
+  // 画面の文言。値（スプレッドシートに入るもの）は言語にかかわらず日本語のまま
+  var T = {
+    ja: {
+      title: "不具合の報告・ご要望",
+      lead: "うまく動かないところや、ほしい機能を教えてください。いただいた内容はすべて読んで、アプリの改善に使います。個別のお返事はしていません。",
+      app: "アプリ", kind: "種類", bug: "不具合の報告", idea: "機能のリクエスト", body: "内容",
+      hintBug: "どの画面で、何をしたら、どうなったかを書いてもらえると助かります。",
+      hintIdea: "どんな機能があるとうれしいか、どんな場面で使いたいかを書いてください。",
+      choose: "選んでください", other: "その他",
+      info: "一緒に送られる情報：", infoVersion: "アプリのバージョン", infoDevice: "端末", sep: "、",
+      send: "送信する", sending: "送信中…",
+      errApp: "アプリを選んでください。", errBody: "内容を書いてください。",
+      errSend: "送信できませんでした。通信できる状態で、もう一度お試しください。",
+      doneTitle: "送信しました", doneBody: "ありがとうございます。<br>いただいた内容は大切に読ませていただきます。",
+      again: "もう1件送る"
+    },
+    en: {
+      title: "Report a Bug / Send a Request",
+      lead: "Tell us about anything that isn't working, or features you'd like to see. We read every message and use it to improve our apps. Please note that we can't reply individually.",
+      app: "App", kind: "Type", bug: "Bug report", idea: "Feature request", body: "Details",
+      hintBug: "It helps a lot if you tell us which screen you were on, what you did, and what happened.",
+      hintIdea: "Tell us what feature you'd like and when you'd want to use it.",
+      choose: "Please choose", other: "Other",
+      info: "Also sent: ", infoVersion: "App version", infoDevice: "Device", sep: ", ",
+      send: "Send", sending: "Sending…",
+      errApp: "Please choose an app.", errBody: "Please write the details.",
+      errSend: "Couldn't send. Please check your connection and try again.",
+      doneTitle: "Sent", doneBody: "Thank you.<br>We'll read your message carefully.",
+      again: "Send another"
+    },
+    de: {
+      title: "Fehler melden / Wunsch senden",
+      lead: "Teile uns mit, was nicht richtig funktioniert oder welche Funktionen du dir wünschst. Wir lesen jede Nachricht und nutzen sie, um unsere Apps zu verbessern. Wir können leider nicht einzeln antworten.",
+      app: "App", kind: "Art", bug: "Fehlermeldung", idea: "Funktionswunsch", body: "Beschreibung",
+      hintBug: "Hilfreich ist, auf welchem Bildschirm du warst, was du getan hast und was passiert ist.",
+      hintIdea: "Beschreibe, welche Funktion du dir wünschst und wann du sie nutzen möchtest.",
+      choose: "Bitte auswählen", other: "Sonstiges",
+      info: "Wird mitgesendet: ", infoVersion: "App-Version", infoDevice: "Gerät", sep: ", ",
+      send: "Senden", sending: "Wird gesendet…",
+      errApp: "Bitte wähle eine App aus.", errBody: "Bitte gib eine Beschreibung ein.",
+      errSend: "Senden fehlgeschlagen. Bitte prüfe deine Verbindung und versuche es erneut.",
+      doneTitle: "Gesendet", doneBody: "Vielen Dank.<br>Wir lesen deine Nachricht aufmerksam.",
+      again: "Weitere Nachricht senden"
+    },
+    fr: {
+      title: "Signaler un bug / Faire une demande",
+      lead: "Dites-nous ce qui ne fonctionne pas ou quelles fonctionnalités vous aimeriez. Nous lisons tous les messages et nous en servons pour améliorer nos apps. Nous ne pouvons pas répondre individuellement.",
+      app: "App", kind: "Type", bug: "Signaler un bug", idea: "Demande de fonctionnalité", body: "Détails",
+      hintBug: "Indiquez si possible l’écran concerné, ce que vous avez fait et ce qui s’est passé.",
+      hintIdea: "Décrivez la fonctionnalité souhaitée et dans quelle situation vous l’utiliseriez.",
+      choose: "Choisissez", other: "Autre",
+      info: "Également envoyé : ", infoVersion: "Version de l’app", infoDevice: "Appareil", sep: ", ",
+      send: "Envoyer", sending: "Envoi…",
+      errApp: "Veuillez choisir une app.", errBody: "Veuillez écrire les détails.",
+      errSend: "Échec de l’envoi. Vérifiez votre connexion et réessayez.",
+      doneTitle: "Envoyé", doneBody: "Merci.<br>Nous lirons votre message avec attention.",
+      again: "Envoyer un autre message"
+    },
+    ko: {
+      title: "버그 신고 · 요청",
+      lead: "제대로 작동하지 않는 부분이나 원하는 기능을 알려 주세요. 보내 주신 내용은 모두 읽고 앱 개선에 활용합니다. 개별 답변은 드리지 않습니다.",
+      app: "앱", kind: "종류", bug: "버그 신고", idea: "기능 요청", body: "내용",
+      hintBug: "어느 화면에서 무엇을 했더니 어떻게 되었는지 적어 주시면 큰 도움이 됩니다.",
+      hintIdea: "어떤 기능이 있으면 좋을지, 어떤 상황에서 쓰고 싶은지 적어 주세요.",
+      choose: "선택해 주세요", other: "기타",
+      info: "함께 보내지는 정보: ", infoVersion: "앱 버전", infoDevice: "기기", sep: ", ",
+      send: "보내기", sending: "보내는 중…",
+      errApp: "앱을 선택해 주세요.", errBody: "내용을 적어 주세요.",
+      errSend: "보내지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.",
+      doneTitle: "보냈습니다", doneBody: "감사합니다.<br>보내 주신 내용은 소중히 읽겠습니다.",
+      again: "한 건 더 보내기"
+    },
+    "zh-Hant": {
+      title: "回報問題・意見",
+      lead: "請告訴我們哪裡無法正常運作，或您希望新增的功能。我們會閱讀所有內容，用於改善 App。恕不個別回覆。",
+      app: "App", kind: "類型", bug: "回報問題", idea: "功能建議", body: "內容",
+      hintBug: "若能寫下在哪個畫面、做了什麼、結果如何，會很有幫助。",
+      hintIdea: "請寫下您希望有什麼功能，以及想在什麼情況下使用。",
+      choose: "請選擇", other: "其他",
+      info: "一併傳送的資訊：", infoVersion: "App 版本", infoDevice: "裝置", sep: "、",
+      send: "傳送", sending: "傳送中…",
+      errApp: "請選擇 App。", errBody: "請填寫內容。",
+      errSend: "無法傳送。請確認網路連線後再試一次。",
+      doneTitle: "已傳送", doneBody: "謝謝您。<br>我們會仔細閱讀您的意見。",
+      again: "再傳送一則"
+    }
+  };
+
+  // ?app= に入れる値・日本語名（スプレッドシートに入る）・ほかの言語の名前。アプリを増やしたらここに足す
+  // ほかの言語の名前は、各アプリの InfoPlist.xcstrings の CFBundleDisplayName に合わせる。省いた言語は en を使う
   var APPS = [
-    ["reprecord", "筋トレップ帳"],
-    ["tekulog", "てくログ"],
-    ["timenote", "タイムノート"],
-    ["tsumilog", "積みログ"],
-    ["osumo", "一筆書き相撲"],
-    ["mochitto", "もちっとパズル"],
-    ["kaidoki", "買いどき"],
-    ["koeedit", "こえエディット"],
-    ["clipa", "Clipa"],
-    ["lingostep", "LingoStep"],
-    ["itquiz", "IT問題集"],
-    ["sumi", "Sumi"],
-    ["ashiato", "スマホの足あと"],
-    ["osumootoshi", "お相撲おとし"],
-    ["minna", "みんなの予定"],
-    ["subnote", "Subnote"],
-    ["taberun", "Taberun"],
-    ["icona", "Icona"],
-    ["pomely", "Pomely"],
-    ["lumoscan", "Lumo Scan"],
-    ["other", "その他"]
+    ["reprecord", "筋トレップ帳", { en: "Gym Log", ko: "헬스 기록", "zh-Hant": "健身日誌" }],
+    ["tekulog", "てくログ", { en: "TekuLog" }],
+    ["timenote", "タイムノート", { en: "TimeNote" }],
+    ["tsumilog", "積みログ", { en: "TsumiLog" }],
+    ["osumo", "一筆書き相撲", { en: "Sumo Path", de: "Sumo-Pfad", fr: "Sumo Chemin", ko: "한붓 스모", "zh-Hant": "一筆相撲" }],
+    ["mochitto", "もちっとパズル", { en: "Mochi Puzzle", de: "Mochi-Puzzle", ko: "모찌 퍼즐", "zh-Hant": "麻糬拼圖" }],
+    ["kaidoki", "買いどき", { en: "Kaidoki" }],
+    ["koeedit", "こえエディット", { en: "KoeEdit", ko: "코에에디트", "zh-Hant": "聲音編輯" }],
+    ["clipa", "Clipa", {}],
+    ["lingostep", "LingoStep", {}],
+    ["itquiz", "IT問題集", { en: "IT Quiz" }],
+    ["sumi", "Sumi", {}],
+    ["ashiato", "スマホの足あと", { en: "Phone Footprints", de: "Handy-Fußspuren", fr: "Empreintes du téléphone", ko: "스마트폰 발자국", "zh-Hant": "手機足跡" }],
+    ["osumootoshi", "お相撲おとし", { en: "Sumo Drop", ko: "스모 드롭", "zh-Hant": "相撲落落" }],
+    ["minna", "みんなの予定", { en: "Our Plans", de: "Unsere Termine", fr: "Nos agendas", ko: "모두의 일정", "zh-Hant": "大家的行程" }],
+    ["subnote", "Subnote", {}],
+    ["taberun", "Taberun", {}],
+    ["icona", "Icona", {}],
+    ["pomely", "Pomely", {}],
+    ["lumoscan", "Lumo Scan", {}],
+    ["other", "その他", null]
   ];
 
   var params = new URLSearchParams(location.search);
+
+  // 言語: ?lang= → 端末の言語 → 英語
+  var LANGS = ["ja", "en", "de", "fr", "ko", "zh-Hant"];
+  function pickLang(code) {
+    if (!code) return null;
+    var c = code.toLowerCase();
+    if (c.indexOf("zh") === 0) return "zh-Hant";
+    var base = c.split(/[-_]/)[0];
+    return LANGS.indexOf(base) >= 0 ? base : null;
+  }
+  var lang = pickLang(params.get("lang"));
+  if (!lang) {
+    var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+    for (var i = 0; i < list.length && !lang; i++) lang = pickLang(list[i]);
+  }
+  if (!lang) lang = "en";
+  function t(key) { return T[lang][key]; }
+
   var select = document.getElementById("app");
   var wanted = params.get("app");
-  if (!wanted || !APPS.some(function (a) { return a[0] === wanted; })) {
+  var hasWanted = !!wanted && APPS.some(function (a) { return a[0] === wanted; });
+  if (!hasWanted) {
     var ph = document.createElement("option");
-    ph.value = ""; ph.textContent = "選んでください"; ph.disabled = true; ph.selected = true;
+    ph.value = ""; ph.disabled = true; ph.selected = true; ph.dataset.placeholder = "1";
     select.appendChild(ph);
   }
   APPS.forEach(function (a) {
     var o = document.createElement("option");
-    o.value = a[1]; o.textContent = a[1];
+    o.value = a[1];
     if (a[0] === wanted) o.selected = true;
     select.appendChild(o);
   });
@@ -213,24 +335,48 @@
 
   var version = (params.get("v") || "").slice(0, 40);
   var device = [params.get("device"), params.get("os")].filter(Boolean).join(" / ").slice(0, 80);
-  if (version || device) {
-    var parts = [];
-    if (version) parts.push("アプリのバージョン <b>" + escapeHtml(version) + "</b>");
-    if (device) parts.push("端末 <b>" + escapeHtml(device) + "</b>");
-    document.getElementById("info").innerHTML = "一緒に送られる情報：" + parts.join("、");
-    document.getElementById("infoCard").hidden = false;
-  }
 
   var hint = document.getElementById("bodyHint");
   document.querySelectorAll('input[name="kind"]').forEach(function (r) {
     r.addEventListener("change", updateHint);
   });
   function updateHint() {
-    hint.textContent = document.getElementById("kindIdea").checked
-      ? "どんな機能があるとうれしいか、どんな場面で使いたいかを書いてください。"
-      : "どの画面で、何をしたら、どうなったかを書いてもらえると助かります。";
+    hint.textContent = document.getElementById("kindIdea").checked ? t("hintIdea") : t("hintBug");
   }
-  updateHint();
+
+  function appName(a) {
+    if (lang === "ja") return a[1];
+    if (!a[2]) return t("other");
+    return a[2][lang] || a[2].en || a[1];
+  }
+
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.title = t("title");
+    document.getElementById("lang").value = lang;
+    document.querySelectorAll("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
+    document.querySelector(".kinds").setAttribute("aria-label", t("kind"));
+    Array.prototype.forEach.call(select.options, function (o, i) {
+      if (o.dataset.placeholder) { o.textContent = t("choose"); return; }
+      var a = APPS[hasWanted ? i : i - 1];
+      o.textContent = appName(a);
+    });
+    if (version || device) {
+      var parts = [];
+      if (version) parts.push(t("infoVersion") + " <b>" + escapeHtml(version) + "</b>");
+      if (device) parts.push(t("infoDevice") + " <b>" + escapeHtml(device) + "</b>");
+      document.getElementById("info").innerHTML = t("info") + parts.join(t("sep"));
+      document.getElementById("infoCard").hidden = false;
+    }
+    updateHint();
+    err.textContent = "";
+  }
+
+  document.getElementById("lang").addEventListener("change", function (e) {
+    lang = e.target.value;
+    applyLang();
+  });
 
   function escapeHtml(s) {
     return s.replace(/[&<>"']/g, function (c) {
@@ -241,13 +387,14 @@
   var form = document.getElementById("form");
   var err = document.getElementById("error");
   var send = document.getElementById("send");
+  applyLang();
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     err.textContent = "";
-    if (!select.value) { err.textContent = "アプリを選んでください。"; select.focus(); return; }
+    if (!select.value) { err.textContent = t("errApp"); select.focus(); return; }
     var body = document.getElementById("body").value.trim();
-    if (body.length < 2) { err.textContent = "内容を書いてください。"; document.getElementById("body").focus(); return; }
+    if (body.length < 2) { err.textContent = t("errBody"); document.getElementById("body").focus(); return; }
     if (form.website.value) { showDone(); return; }
 
     var data = new URLSearchParams();
@@ -255,18 +402,18 @@
     data.append(ENTRY.kind, form.querySelector('input[name="kind"]:checked').value);
     data.append(ENTRY.body, body);
     data.append(ENTRY.version, version);
-    data.append(ENTRY.device, device);
+    data.append(ENTRY.device, [device, "lang: " + lang].filter(Boolean).join(" / "));
 
     send.disabled = true;
-    send.textContent = "送信中…";
+    send.textContent = t("sending");
     fetch(FORM_ACTION, { method: "POST", mode: "no-cors", body: data })
       .then(showDone)
       .catch(function () {
-        err.textContent = "送信できませんでした。通信できる状態で、もう一度お試しください。";
+        err.textContent = t("errSend");
       })
       .finally(function () {
         send.disabled = false;
-        send.textContent = "送信する";
+        send.textContent = t("send");
       });
   });
 
